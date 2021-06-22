@@ -5,6 +5,7 @@ body {
     linear-gradient(25deg, rgb(5, 108, 242), rgb(247, 236, 31));
   background-size: 150px, auto;
   font-size: 16px;
+  user-select: none;
 }
 .main-wrapper {
   min-height: inherit;
@@ -14,8 +15,8 @@ body {
   align-items: center;
 }
 .calculator {
-  height: 400px;
-  width: 250px;
+  height: 450px;
+  width: 300px;
   border: 3px solid #c8d348;
   border-radius: 3px;
   display: grid;
@@ -24,12 +25,8 @@ body {
   grid-template-rows: repeat(8, 1fr);
   background-color: #c8d348;
 }
+.btn,
 .display {
-  grid-column: 1 / -1;
-  grid-row: 1 / 3;
-  background-color: #84af83;
-}
-.btn {
   display: grid;
   justify-content: center;
   align-items: center;
@@ -37,7 +34,16 @@ body {
   color: #262626;
   font-size: 1rem;
   font-weight: 600;
-  background-color: blanchedalmond;
+}
+.display {
+  grid-column: 1 / -1;
+  grid-row: 1 / 3;
+  background-color: #84af83;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.btn {
+  background-color: rgb(255, 235, 205);
 }
 /* NUMBER BTNS */
 .btn-number {
@@ -129,18 +135,15 @@ body {
   grid-row: 4 / 5;
 }
 .btn-del-one {
-  grid-column: 3 / 4;
+  grid-column: 4 / 5;
   grid-row: 3 / 4;
 }
 .btn-del-all {
   grid-column: 1 / 2;
   grid-row: 3 / 4;
 }
-.btn-sign {
-  grid-column: 4 / 5;
-  grid-row: 3 / 4;
-}
+
 .btn-empty {
-  grid-column: 2 / 3;
+  grid-column: 2 / 4;
   grid-row: 3 / 4;
 }

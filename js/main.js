@@ -20,17 +20,24 @@ function removeDot() {
 let numberFlag = false;
 let dotFlag = true;
 let inputs = [];
-// const lastEle = () => inputs[inputs.length - 1];
 let paraCounter = 0;
 let currentType = "";
 let currentValue = "";
 for (let num of numbers) {
   num.addEventListener("click", function (e) {
-    if (currentValue !== "" && currentValue !== "-") currentValue = "";
-    numberFlag = true;
-    currentType = "number";
-    currentValue += e.target.textContent;
-    updateDisplay(e);
+    if (currentType !== "number") inputs.push(currentValue);
+    if (
+      currentType === "" ||
+      currentType === "operator" ||
+      currentType === "openPara" ||
+      currentType === "number"
+    ) {
+      if (currentType !== "number") currentValue = "";
+      numberFlag = true;
+      currentType = "number";
+      currentValue += e.target.textContent;
+      updateDisplay(e);
+    }
   });
 }
 floatPoint.addEventListener("click", function (e) {
@@ -43,28 +50,62 @@ floatPoint.addEventListener("click", function (e) {
 
 for (let ope of operators) {
   ope.addEventListener("click", function (e) {
+    inputs.push(currentValue);
     numberFlag = false;
     dotFlag = true;
-    if (currentType === "number") {
-      currentValue = "operator";
+    if (currentType === "number" || currentType === "closePara") {
+      currentType = "operator";
       currentValue = e.target.textContent;
       removeDot();
       updateDisplay(e);
       return;
     }
-    if (currentValue === "" && e.target.textContent === "-") {
-      currentValue += e.target.textContent;
+    if (
+      e.target.textContent === "-" &&
+      (currentType === "" || currentType === "openPara")
+    ) {
+      currentType = "operator";
+      currentValue = e.target.textContent;
       updateDisplay(e);
       return;
     }
   });
 }
 
-openPara.addEventListener("click", function (e) {});
+openPara.addEventListener("click", function (e) {
+  inputs.push(currentValue);
+  numberFlag = false;
+  dotFlag = true;
+  if (
+    currentType === "" ||
+    currentType === "operator" ||
+    currentType === "openPara" ||
+    display.textContent === "-"
+  ) {
+    paraCounter += 1;
+    currentType = "openPara";
+    currentValue = e.target.textContent;
+    updateDisplay(e);
+    return;
+  }
+});
 
-closePara.addEventListener("click", function (e) {});
+closePara.addEventListener("click", function (e) {
+  inputs.push(currentValue);
+  numberFlag = false;
+  dotFlag = true;
+  if (paraCounter === 0) return;
+  if (currentType === "number" || currentType === "closePara") {
+    paraCounter -= 1;
+    currentType = "closePara";
+    currentValue = e.target.textContent;
+    updateDisplay(e);
+    return;
+  }
+});
 
 equal.addEventListener("click", function () {
+  if (currentType !== "") inputs.push(currentValue);
   alert(display.textContent);
 });
 //Solve math with infix expression

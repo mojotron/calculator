@@ -1,32 +1,71 @@
 "use strict";
 //DOM Selectors
-const buttons = document.querySelectorAll(".btn");
+const numbers = document.querySelectorAll(".btn-number");
+const operators = document.querySelectorAll(".btn-operator");
+const floatPoint = document.querySelector(".btn-dot");
+const openPara = document.querySelector(".btn-open-parentheses");
+const closePara = document.querySelector(".btn-close-parentheses");
 const display = document.querySelector(".display");
 const equal = document.querySelector(".btn-equal");
+//GET NUMBER INPUT
+function updateDisplay(event) {
+  display.textContent += event.target.textContent;
+}
+function removeDot() {
+  if (display.textContent.slice(-1) === ".") {
+    display.textContent = display.textContent.slice(0, -1);
+  }
+}
+//HELPER FUNCTIONS
+let numberFlag = false;
+let dotFlag = true;
+let inputs = [];
+// const lastEle = () => inputs[inputs.length - 1];
+let paraCounter = 0;
+let currentType = "";
+let currentValue = "";
+for (let num of numbers) {
+  num.addEventListener("click", function (e) {
+    if (currentValue !== "" && currentValue !== "-") currentValue = "";
+    numberFlag = true;
+    currentType = "number";
+    currentValue += e.target.textContent;
+    updateDisplay(e);
+  });
+}
+floatPoint.addEventListener("click", function (e) {
+  if (numberFlag && dotFlag) {
+    currentValue += e.target.textContent;
+    updateDisplay(e);
+    dotFlag = false;
+  }
+});
 
-//EVENT Handlers
-for (let btn of buttons) {
-  btn.addEventListener("click", function (e) {
-    //format spaces for easier splitting
-    const temp = display.textContent;
-    if (e.target.textContent === "-" && temp === "") {
-      display.textContent += e.target.textContent;
-    } else if (e.target.classList.contains("btn-number")) {
-      display.textContent += e.target.textContent;
-    } else if (e.target.textContent === "-" && temp.slice(-2) === "( ") {
-      display.textContent += e.target.textContent;
-    } else if (e.target.textContent === ")") {
-      display.textContent += " " + e.target.textContent;
-    } else if (e.target.textContent === "(") {
-      display.textContent += e.target.textContent + " ";
-    } else {
-      display.textContent += ` ${e.target.textContent} `;
+for (let ope of operators) {
+  ope.addEventListener("click", function (e) {
+    numberFlag = false;
+    dotFlag = true;
+    if (currentType === "number") {
+      currentValue = "operator";
+      currentValue = e.target.textContent;
+      removeDot();
+      updateDisplay(e);
+      return;
+    }
+    if (currentValue === "" && e.target.textContent === "-") {
+      currentValue += e.target.textContent;
+      updateDisplay(e);
+      return;
     }
   });
 }
 
+openPara.addEventListener("click", function (e) {});
+
+closePara.addEventListener("click", function (e) {});
+
 equal.addEventListener("click", function () {
-  console.log(display.textContent);
+  alert(display.textContent);
 });
 //Solve math with infix expression
 class Stack {
@@ -49,8 +88,3 @@ class Stack {
     return this.stack[this.stack.length - 1];
   }
 }
-
-const ex1 = "2 + 3 / 5";
-const operands = new Stack();
-const operators = new Stack();
-for (let i = 0; i < ex1.length; i++) {}

@@ -5,6 +5,7 @@ const operators = document.querySelectorAll(".btn-operator");
 const floatPoint = document.querySelector(".btn-dot");
 const openPara = document.querySelector(".btn-open-parentheses");
 const closePara = document.querySelector(".btn-close-parentheses");
+const changeSign = document.querySelector(".btn-change-sign");
 const display = document.querySelector(".display");
 const equal = document.querySelector(".btn-equal");
 //GET NUMBER INPUT
@@ -60,15 +61,6 @@ for (let ope of operators) {
       updateDisplay(e);
       return;
     }
-    if (
-      e.target.textContent === "-" &&
-      (currentType === "" || currentType === "openPara")
-    ) {
-      currentType = "operator";
-      currentValue = e.target.textContent;
-      updateDisplay(e);
-      return;
-    }
   });
 }
 
@@ -91,18 +83,22 @@ openPara.addEventListener("click", function (e) {
 });
 
 closePara.addEventListener("click", function (e) {
+  if (paraCounter === 0) return;
   inputs.push(currentValue);
   numberFlag = false;
   dotFlag = true;
-  if (paraCounter === 0) return;
+
   if (currentType === "number" || currentType === "closePara") {
     paraCounter -= 1;
+
     currentType = "closePara";
     currentValue = e.target.textContent;
     updateDisplay(e);
     return;
   }
 });
+
+changeSign.addEventListener("click", function () {});
 
 equal.addEventListener("click", function () {
   if (currentType !== "") inputs.push(currentValue);

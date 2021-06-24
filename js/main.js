@@ -8,7 +8,7 @@ const closePara = document.querySelector(".btn-close-parentheses");
 const changeSign = document.querySelector(".btn-change-sign");
 const display = document.querySelector(".display");
 const equal = document.querySelector(".btn-equal");
-//GET NUMBER INPUT
+
 function updateDisplay(event) {
   display.textContent += event.target.textContent;
 }
@@ -17,16 +17,22 @@ function removeDot() {
     display.textContent = display.textContent.slice(0, -1);
   }
 }
-//HELPER FUNCTIONS
+//Global Variables
+//numberFlag and dotFlag are used for creating float point number
 let numberFlag = false;
 let dotFlag = true;
+let negationFlag = false;
+//As inserting math formula chop it and insert elements to inputs array
+//there are 4 types: number, operator, openPara, closePara
 let inputs = [];
 let paraCounter = 0;
+//Global currentType and current Value are used for logic when to insert input to inputs
 let currentType = "";
 let currentValue = "";
 for (let num of numbers) {
   num.addEventListener("click", function (e) {
-    if (currentType !== "number") inputs.push(currentValue);
+    if (currentType !== "number" && !numberFlag && currentValue !== "")
+      inputs.push(currentValue);
     if (
       currentType === "" ||
       currentType === "operator" ||
@@ -34,6 +40,10 @@ for (let num of numbers) {
       currentType === "number"
     ) {
       if (currentType !== "number") currentValue = "";
+      if (negationFlag) {
+        currentValue = "-";
+        negationFlag = false;
+      }
       numberFlag = true;
       currentType = "number";
       currentValue += e.target.textContent;
@@ -51,9 +61,18 @@ floatPoint.addEventListener("click", function (e) {
 
 for (let ope of operators) {
   ope.addEventListener("click", function (e) {
-    inputs.push(currentValue);
+    if (currentValue !== "" && currentType !== "operator")
+      inputs.push(currentValue);
     numberFlag = false;
     dotFlag = true;
+
+    if (e.target.textContent === "-") {
+      if (currentValue === "" || currentType === "openPara") {
+        negationFlag = true;
+        updateDisplay(e);
+        currentValue = ""; //For bug with inputing double open para in -(-num) then currentValue !== "" in num check
+      }
+    }
     if (currentType === "number" || currentType === "closePara") {
       currentType = "operator";
       currentValue = e.target.textContent;
@@ -65,7 +84,11 @@ for (let ope of operators) {
 }
 
 openPara.addEventListener("click", function (e) {
-  inputs.push(currentValue);
+  if (currentValue !== "") inputs.push(currentValue);
+  if (negationFlag) {
+    inputs.push("-");
+    negationFlag = false;
+  }
   numberFlag = false;
   dotFlag = true;
   if (
@@ -84,7 +107,7 @@ openPara.addEventListener("click", function (e) {
 
 closePara.addEventListener("click", function (e) {
   if (paraCounter === 0) return;
-  inputs.push(currentValue);
+  if (currentValue !== "") inputs.push(currentValue);
   numberFlag = false;
   dotFlag = true;
 
@@ -98,12 +121,11 @@ closePara.addEventListener("click", function (e) {
   }
 });
 
-changeSign.addEventListener("click", function () {});
-
 equal.addEventListener("click", function () {
-  if (currentType !== "") inputs.push(currentValue);
+  if (currentValue !== "") inputs.push(currentValue);
   alert(display.textContent);
 });
+
 //Solve math with infix expression
 class Stack {
   constructor() {

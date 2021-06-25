@@ -115,12 +115,12 @@ body {
   background-color: #e7e54a;
 }
 .btn-equal {
-  grid-column: 2 / 3;
+  grid-column: 2 / 4;
   grid-row: 8 / 9;
 }
 .btn-dot {
   grid-column: 3 / 4;
-  grid-row: 8 / 9;
+  grid-row: 4 / 5;
 }
 .btn-open-parentheses {
   grid-column: 1 / 2;
@@ -128,10 +128,6 @@ body {
 }
 .btn-close-parentheses {
   grid-column: 2 / 3;
-  grid-row: 4 / 5;
-}
-.btn-percentage {
-  grid-column: 3 / 4;
   grid-row: 4 / 5;
 }
 .btn-del-one {

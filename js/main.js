@@ -154,3 +154,81 @@ class Stack {
     return this.stack[this.stack.length - 1];
   }
 }
+
+/////
+const expression = {
+  elements: [],
+  insert: function (value, type) {
+    this.elements.push({ value, type });
+  },
+  isEmpty: function () {
+    return this.elements.length === 0;
+  },
+  lastElement: function () {
+    if (!this.isEmpty) return null;
+    return this.elements[this.elements.length - 1];
+  },
+  lastValue: function () {
+    return this.lastElement().value;
+  },
+  lastType: function () {
+    return this.lastElement().type;
+  },
+};
+
+let value = "";
+let type = "";
+
+function addElementToExpression() {}
+function enterNumber(char) {
+  //Check is it possible to enter number
+  if (type === "number") {
+    value += char;
+  }
+  //Check for negative Flag
+  //Check for float flag
+  //Update calculator
+  //Update display
+}
+
+function enterFloat(char) {
+  //only if current type is number and if is negative must be numbers after -
+  if (type === "number" && value !== "-") {
+    if (value.includes(".")) return; //Gourd clause if number is already float
+    value += ".";
+  }
+}
+function enterOperator(char) {
+  //Special case for making negative number
+  if (char === "-") {
+    if (expression.isEmpty() || expression.lastType() === "openPara") {
+      if (value[0] === "-") return; //Gourd clause if number is already negative
+      value += "-";
+      type = "number";
+      return;
+    }
+  }
+  //Regular case when to input operator
+  if (
+    expression.lastType() === "number" ||
+    expression.lastType() === "closePara"
+  ) {
+  }
+  //special - cases
+  //regular case
+}
+function enterOpenPara() {}
+function enterClosePara() {}
+function calcMathExpression() {}
+function deleteLastChar() {}
+function resetMathExpression() {}
+
+for (let operator of operators) {
+  operator.addEventListener("click", (e) =>
+    enterOperator(e.target.textContent)
+  );
+}
+for (let number of numbers) {
+  number.addEventListener("click", (e) => enterNumber(e.target.textContent));
+}
+floatPoint.addEventListener("click", enterFloat);

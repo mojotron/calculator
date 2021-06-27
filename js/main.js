@@ -155,9 +155,10 @@ class Stack {
   }
 }
 
-/////
-const expression = {
+/////const
+expression = {
   elements: [],
+  countParas: 0,
   insert: function (value, type) {
     this.elements.push({ value, type });
   },
@@ -179,16 +180,23 @@ const expression = {
 let value = "";
 let type = "";
 
-function addElementToExpression() {}
+function addElementToExpression() {
+  expression.insert(value, type);
+  value = "";
+  type = "";
+}
+
 function enterNumber(char) {
   //Check is it possible to enter number
-  if (type === "number") {
+  if (
+    type === "number" ||
+    expression.isEmpty() ||
+    expression.lastType() === "operator" ||
+    expression.lastType() === "openPara"
+  ) {
     value += char;
+    type = "number";
   }
-  //Check for negative Flag
-  //Check for float flag
-  //Update calculator
-  //Update display
 }
 
 function enterFloat(char) {
@@ -198,27 +206,61 @@ function enterFloat(char) {
     value += ".";
   }
 }
+
 function enterOperator(char) {
   //Special case for making negative number
-  if (char === "-") {
+  if (char === "-" && value === "") {
     if (expression.isEmpty() || expression.lastType() === "openPara") {
-      if (value[0] === "-") return; //Gourd clause if number is already negative
+      if (value[0] === "-" && type === "number") return; //Gourd clause if number is already negative
       value += "-";
       type = "number";
       return;
     }
   }
-  //Regular case when to input operator
+  //Special case of inserting because of possibility of crating negative numbers
+  if (type === "number") addElementToExpression();
   if (
     expression.lastType() === "number" ||
     expression.lastType() === "closePara"
   ) {
+    value = char;
+    type = "operator";
+    addElementToExpression();
   }
-  //special - cases
-  //regular case
 }
-function enterOpenPara() {}
-function enterClosePara() {}
+function enterOpenPara(char) {
+  //Special case current value "-" and type "number" add it ass operator to expression
+  if (value === "-" && type === "number") {
+    type = "operator";
+    addElementToExpression();
+  }
+  //
+  if (
+    expression.isEmpty() ||
+    expression.lastType() === "operator" ||
+    expression.lastType() === "openPara"
+  ) {
+    value = char;
+    type = "openPara";
+    expression.countParas++;
+    addElementToExpression();
+  }
+}
+function enterClosePara(char) {
+  if (expression.countParas === 0) return; //Gourd clause cant be more closed then opened paras
+  //Special case for numbers
+  if (type === "number") addElementToExpression();
+  if (
+    expression.lastType() === "number" ||
+    expression.lastType() === "closePara"
+  ) {
+    value = char;
+    type = "closePara";
+    expression.countParas--;
+    addElementToExpression();
+  }
+}
+
 function calcMathExpression() {}
 function deleteLastChar() {}
 function resetMathExpression() {}
@@ -232,3 +274,7 @@ for (let number of numbers) {
   number.addEventListener("click", (e) => enterNumber(e.target.textContent));
 }
 floatPoint.addEventListener("click", enterFloat);
+openPara.addEventListener("click", (e) => enterOpenPara(e.target.textContent));
+closePara.addEventListener("click", (e) =>
+  enterClosePara(e.target.textContent)
+);

@@ -44,13 +44,20 @@ const expression = {
 let value = "";
 let type = "";
 
+function displayExpression() {
+  display.textContent = expression.printExpression();
+  if (type === "number") display.textContent += ` ${value}`;
+}
+
 function addElementToExpression() {
   expression.insert(value, type);
   value = "";
   type = "";
 }
-function displayExpression() {
-  display.textContent = expression.printExpression();
+
+function addElementAndDisplay() {
+  addElementToExpression();
+  displayExpression();
 }
 
 function enterNumber(char) {
@@ -63,6 +70,7 @@ function enterNumber(char) {
   ) {
     value += char;
     type = "number";
+    displayExpression();
   }
 }
 
@@ -71,7 +79,13 @@ function enterFloat() {
   if (type === "number" && value !== "-") {
     if (value.includes(".")) return; //Gourd clause if number is already float
     value += ".";
+    displayExpression();
   }
+}
+
+function removeFloatDot() {
+  // In case there is dot last char before inserting in expression, remove dot
+  if (value.slice(-1) === ".") value = value.slice(0, -1);
 }
 
 function enterOperator(char) {
@@ -81,25 +95,29 @@ function enterOperator(char) {
       if (value[0] === "-" && type === "number") return; //Gourd clause if number is already negative
       value += "-";
       type = "number";
+      displayExpression();
       return;
     }
   }
   //Special case of inserting because of possibility of crating negative numbers
-  if (type === "number") addElementToExpression();
+  if (type === "number") {
+    removeFloatDot();
+    addElementToExpression();
+  }
   if (
     expression.lastType() === "number" ||
     expression.lastType() === "closePara"
   ) {
     value = char;
     type = "operator";
-    addElementToExpression();
+    addElementAndDisplay();
   }
 }
 function enterOpenPara(char) {
   //Special case current value "-" and type "number" add it ass operator to expression
   if (value === "-" && type === "number") {
     type = "operator";
-    addElementToExpression();
+    addElementAndDisplay();
   }
   //
   if (
@@ -110,7 +128,7 @@ function enterOpenPara(char) {
     value = char;
     type = "openPara";
     expression.countParas++;
-    addElementToExpression();
+    addElementAndDisplay();
   }
 }
 function enterClosePara(char) {
@@ -124,7 +142,7 @@ function enterClosePara(char) {
     value = char;
     type = "closePara";
     expression.countParas--;
-    addElementToExpression();
+    addElementAndDisplay();
   }
 }
 
@@ -139,22 +157,31 @@ function calcMathExpression() {
 function deleteLastChar() {
   if (type === "number" && value !== "") {
     value = value.slice(0, -1);
+    if (value === "") type = "";
+    displayExpression();
     return;
   }
   if (type === "" && expression.lastType() === "number") {
     ({ value, type } = expression.removeLast());
-    alert(`${value} ${type}`);
+    deleteLastChar();
+    displayExpression();
+    return;
   }
-  //Current number
-  //delete current number until value === ""
-  //then if elements not empty take element from top and delete it
-  //if element taken from top is number delete step 1.
+  if (!expression.isEmpty() && type === "") {
+    //Update disbalance of paras count
+    let { _, type } = expression.removeLast();
+    if (type === "openPara") expression.countParas--;
+    if (type === "closePara") expression.countParas++;
+    displayExpression();
+    return;
+  }
 }
 
 function resetCalculator() {
   value = "";
   type = "";
   expression.resetExpression();
+  displayExpression();
 }
 
 for (let operator of operators) {

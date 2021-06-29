@@ -116,14 +116,15 @@ function enterOperator(char) {
 function enterOpenPara(char) {
   //Special case current value "-" and type "number" add it ass operator to expression
   if (value === "-" && type === "number") {
-    type = "operator";
+    type = "unaryOpe";
     addElementAndDisplay();
   }
   //
   if (
     expression.isEmpty() ||
     expression.lastType() === "operator" ||
-    expression.lastType() === "openPara"
+    expression.lastType() === "openPara" ||
+    expression.lastType() === "unaryOpe"
   ) {
     value = char;
     type = "openPara";
@@ -149,6 +150,8 @@ function enterClosePara(char) {
 function calcMathExpression() {
   //Special case if last input is number
   if (type === "number") addElementToExpression();
+  //Check is paras close and is last element number and last para
+  // give friendly msg"
   //Calculate expression
   //Display result
   //Prepare state for new input

@@ -1,7 +1,4 @@
 "use strict";
-// Shunting-yard algorithm
-//Make Stack
-//Make Queue
 const queueDS = {
   queue: [],
   isEmpty: function () {
@@ -29,70 +26,81 @@ const stackDS = {
     return this.stack.pop();
   },
   top: function () {
-    if (this.isEmpty()) return null;
     return this.stack[this.stack.length - 1];
   },
 };
-
+//10 + 3 * 5 / (16 - 4)
+//-(3+5)-(1+2)
+//-(-(3+5)-(1+2))
 let temp = [
+  { value: "-", type: "unaryOpe" },
+  { value: "(", type: "openPara" },
+  { value: "-", type: "unaryOpe" },
+  { value: "(", type: "openPara" },
   { value: "3", type: "number" },
   { value: "+", type: "operator" },
   { value: "5", type: "number" },
+  { value: ")", type: "closePara" },
   { value: "-", type: "operator" },
-  { value: "6", type: "number" },
-  { value: "x", type: "operator" },
-  { value: "9", type: "number" },
-  { value: "/", type: "operator" },
-  { value: "5", type: "number" },
+  { value: "(", type: "openPara" },
+  { value: "1", type: "number" },
+  { value: "+", type: "operator" },
+  { value: "2", type: "number" },
+  { value: ")", type: "closePara" },
+  { value: ")", type: "closePara" },
+  // { value: "/", type: "operator" },
+  // { value: "5", type: "number" },
 ];
 
 function operatorPrecedence(operator) {
   if (operator.value === "+" || operator.value === "-") return 1;
   if (operator.value === "x" || operator.value === "/") return 2;
-  // if (operator.type === "unaryOpe") return 3;
-  // if (operator.type === "openPara" || operator.type === "closePare") return 4;
+  if (operator.type === "unaryOpe") return 3;
 }
 
 function comparePrecedence(a, b) {
-  return operatorPrecedence(a) > operatorPrecedence(b);
+  return operatorPrecedence(a) >= operatorPrecedence(b);
 }
-
+// Shunting-yard algorithm
 function infixToPostfix(expression) {
   expression.forEach(function (element) {
-    //Number to queue
+    //Number and open para goes directly to queue
     if (element.type === "number") {
       queueDS.enqueue(element);
+      //Open para goes directly to stack
     } else if (element.type === "openPara") {
       stackDS.push(element);
+      //Close para - enqueue all from stack until you reach open para
     } else if (element.type === "closePara") {
-      while (stackDS.pop().type !== "openPara") {
+      while (stackDS.top().type !== "openPara") {
         queueDS.enqueue(stackDS.pop());
       }
+      stackDS.pop(); //Remove open para from stack
+      //Unary - has higher precedence then other operators, directly psh to stack
     } else if (element.type === "unaryOpe") {
-      queueDS.enqueue(element);
+      stackDS.push(element);
+      //Operator if stack is empty push directly to stack else compare precedence
     } else if (element.type === "operator") {
-      if (stackDS.isEmpty()) {
-        stackDS.push(element);
-        console.log(stackDS.stack);
-      } else {
-        console.log(stackDS.top(), element);
-        if (comparePrecedence(stackDS.top(), element)) {
-          console.log(`ITS GREATER`);
+      //if stack is empty push directly to stack
+      if (stackDS.isEmpty()) stackDS.push(element);
+      //if stack is not empty, compare top op the stack and current operator
+      //for all operator that have higher or equal precedence on the top, move
+      //them to queue and after that push current operator to stack, including
+      //unary -
+      else {
+        //If precedence higher or equal pop and enqueue
+        while (
+          !stackDS.isEmpty() &&
+          comparePrecedence(stackDS.top(), element)
+        ) {
           queueDS.enqueue(stackDS.pop());
-          stackDS.push(element);
-        } else {
-          stackDS.push(element);
         }
+        stackDS.push(element);
       }
     }
-    //Open para to stack
-    //Close para move all operators to queue until open para
-    //Operator - check precedence if higher in stack move higher to queue and put current to stack
-    //Unary operator directly to stack
-    //Put all ramaing stack element to queue
   });
-  while (!stackDS.isEmpty()) {
-    queueDS.enqueue(stackDS.pop());
-  }
+  //Enqueue leftover operators from stack
+  while (!stackDS.isEmpty()) queueDS.enqueue(stackDS.pop());
 }
 infixToPostfix(temp);
+//unary opr if in evaulation 1 operand and 1 operator make calculation

@@ -36,7 +36,7 @@ class Stack {
 //10 + 3 * 5 / (16 - 4)
 //-(3+5)-(1+2)
 //-(-(3+5)-(1+2))
-//-(-(3+5)/2-(4-(9/6+3)))
+//-(-(3+5)/2-(4-(9/6+3)*3+4)*5)*6
 let temp = [
   { value: "-", type: "unaryOpe" },
   { value: "(", type: "openPara" },
@@ -59,8 +59,16 @@ let temp = [
   { value: "+", type: "operator" },
   { value: "3", type: "number" },
   { value: ")", type: "closePara" },
+  { value: "x", type: "operator" },
+  { value: "3", type: "number" },
+  { value: "+", type: "operator" },
+  { value: "4", type: "number" },
   { value: ")", type: "closePara" },
+  { value: "x", type: "operator" },
+  { value: "5", type: "number" },
   { value: ")", type: "closePara" },
+  { value: "x", type: "operator" },
+  { value: "6", type: "number" },
 ];
 
 function operatorPrecedence(operator) {

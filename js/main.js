@@ -8,6 +8,18 @@ const closePara = document.querySelector(".btn-close-parentheses");
 const equal = document.querySelector(".btn-equal");
 const deleteChar = document.querySelector(".btn-del-one");
 const reset = document.querySelector(".btn-del-all");
+//Alert box
+const alertBox = document.querySelector(".alert-box");
+const alertBtn = document.querySelector(".btn-close-alert");
+const alertMsg = document.querySelector(".alert-msg");
+
+alertBtn.addEventListener("click", () => alertBox.classList.add("hidden"));
+
+function creatAlertMsg(msg) {
+  alertMsg.textContent = msg;
+  alertBox.classList.remove("hidden");
+}
+/////////////////
 
 const expression = {
   elements: [],
@@ -151,7 +163,10 @@ function calcMathExpression() {
   //Special case if last input is number
   if (type === "number") addElementToExpression();
   //Check is paras close and is last element number and last para
-  // give friendly msg"
+  if (expression.countParas !== 0)
+    return creatAlertMsg("unbalance parentheses");
+  if (expression.lastType() === "operator")
+    return creatAlertMsg("expression ending with operator");
   //Calculate expression
   //Display result
   //Prepare state for new input

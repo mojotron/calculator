@@ -22,7 +22,7 @@ body {
   border-radius: 5px;
   display: grid;
   grid-gap: 4px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(8, 1fr);
   background-color: #c8d348;
   padding: 10px;
@@ -145,4 +145,31 @@ body {
 .btn-empty {
   grid-column: 2 / 4;
   grid-row: 3 / 4;
+}
+/* Alert box */
+.alert-box {
+  height: 45px;
+  min-width: 200px;
+  background-color: rgb(245, 123, 9);
+  position: absolute;
+  top: 30%;
+  transform: translateY(-30%);
+  display: flex;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+.btn-close-alert {
+  font-size: 1.2rem;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+}
+.btn-close-alert:hover,
+.btn-close-alert:active {
+  color: rgb(247, 236, 31);
+}
+.hidden {
+  visibility: hidden;
 }

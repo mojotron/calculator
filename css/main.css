@@ -3,7 +3,7 @@ body {
   width: 100%;
   background: url("/images/pattern.png"),
     linear-gradient(25deg, rgb(5, 108, 242), rgb(247, 236, 31));
-  background-size: 125px, auto;
+  background-size: 50px, auto;
   font-size: 16px;
   user-select: none;
   font-family: "Bebas Neue", monospace;
@@ -14,6 +14,22 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+/* HEADER */
+.header {
+  color: #343434;
+  width: 400px;
+  text-align: center;
+}
+.headings {
+  font-size: 2.8rem;
+  font-weight: 800;
+}
+.info-msg {
+  font-size: 1.1rem;
+  font-weight: 100;
+  letter-spacing: 1px;
+  padding: 10px 0 25px;
 }
 .calculator {
   height: 450px;
@@ -26,6 +42,7 @@ body {
   grid-template-rows: repeat(8, 1fr);
   background-color: #c8d348;
   padding: 10px;
+  box-shadow: 2px 1px 50px #464646;
 }
 .btn,
 .display {
@@ -41,12 +58,21 @@ body {
   grid-column: 1 / -1;
   grid-row: 1 / 3;
   background-color: #84af83;
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   font-weight: 400;
+  padding: 10px;
+  overflow-y: scroll;
 }
 .btn {
   background-color: rgb(255, 235, 205);
-  font-size: 1.3rem;
+  font-size: 1.5rem;
+}
+.btn:hover {
+  opacity: 0.6;
+  color: #000;
+}
+.btn:active {
+  opacity: 0.3;
 }
 /* NUMBER BTNS */
 .btn-number {
@@ -152,7 +178,7 @@ body {
   min-width: 200px;
   background-color: rgb(245, 123, 9);
   position: absolute;
-  top: 30%;
+  top: 43%;
   transform: translateY(-30%);
   display: flex;
   color: #fff;
@@ -173,3 +199,4 @@ body {
 .hidden {
   visibility: hidden;
 }
+/*TEST*/

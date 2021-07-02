@@ -14,7 +14,6 @@ class Queue {
     return this.queue.shift();
   }
 }
-
 class Stack {
   constructor() {
     this.stack = [];
@@ -37,39 +36,39 @@ class Stack {
 //-(3+5)-(1+2)
 //-(-(3+5)-(1+2))
 //-(-(3+5)/2-(4-(9/6+3)*3+4)*5)*6
-let temp = [
-  { value: "-", type: "unaryOpe" },
-  { value: "(", type: "openPara" },
-  { value: "-", type: "unaryOpe" },
-  { value: "(", type: "openPara" },
-  { value: "3", type: "number" },
-  { value: "+", type: "operator" },
-  { value: "5", type: "number" },
-  { value: ")", type: "closePara" },
-  { value: "/", type: "operator" },
-  { value: "2", type: "number" },
-  { value: "-", type: "operator" },
-  { value: "(", type: "openPara" },
-  { value: "4", type: "number" },
-  { value: "-", type: "operator" },
-  { value: "(", type: "openPara" },
-  { value: "9", type: "number" },
-  { value: "/", type: "operator" },
-  { value: "6", type: "number" },
-  { value: "+", type: "operator" },
-  { value: "3", type: "number" },
-  { value: ")", type: "closePara" },
-  { value: "x", type: "operator" },
-  { value: "3", type: "number" },
-  { value: "+", type: "operator" },
-  { value: "4", type: "number" },
-  { value: ")", type: "closePara" },
-  { value: "x", type: "operator" },
-  { value: "5", type: "number" },
-  { value: ")", type: "closePara" },
-  { value: "x", type: "operator" },
-  { value: "6", type: "number" },
-];
+// let temp = [
+//   { value: "-", type: "unaryOpe" },
+//   { value: "(", type: "openPara" },
+//   { value: "-", type: "unaryOpe" },
+//   { value: "(", type: "openPara" },
+//   { value: "3", type: "number" },
+//   { value: "+", type: "operator" },
+//   { value: "5", type: "number" },
+//   { value: ")", type: "closePara" },
+//   { value: "/", type: "operator" },
+//   { value: "2", type: "number" },
+//   { value: "-", type: "operator" },
+//   { value: "(", type: "openPara" },
+//   { value: "4", type: "number" },
+//   { value: "-", type: "operator" },
+//   { value: "(", type: "openPara" },
+//   { value: "9", type: "number" },
+//   { value: "/", type: "operator" },
+//   { value: "6", type: "number" },
+//   { value: "+", type: "operator" },
+//   { value: "3", type: "number" },
+//   { value: ")", type: "closePara" },
+//   { value: "x", type: "operator" },
+//   { value: "3", type: "number" },
+//   { value: "+", type: "operator" },
+//   { value: "4", type: "number" },
+//   { value: ")", type: "closePara" },
+//   { value: "x", type: "operator" },
+//   { value: "5", type: "number" },
+//   { value: ")", type: "closePara" },
+//   { value: "x", type: "operator" },
+//   { value: "6", type: "number" },
+// ];
 
 function operatorPrecedence(operator) {
   if (operator.value === "x" || operator.value === "/") return 2;

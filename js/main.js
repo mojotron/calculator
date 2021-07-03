@@ -1,114 +1,5 @@
 "use strict";
-class Queue {
-  constructor() {
-    this.queue = [];
-  }
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-  enqueue(value) {
-    this.queue.push(value);
-    return this.queue.length;
-  }
-  dequeue() {
-    return this.queue.shift();
-  }
-}
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-  push(value) {
-    this.stack.push(value);
-    return this.stack.length;
-  }
-  pop() {
-    return this.stack.pop();
-  }
-  top() {
-    return this.stack[this.stack.length - 1];
-  }
-}
-
-function operatorPrecedence(operator) {
-  if (operator.value === "x" || operator.value === "/") return 2;
-  if (operator.value === "+" || operator.value === "-") return 1;
-}
-
-function comparePrecedence(a, b) {
-  return operatorPrecedence(a) >= operatorPrecedence(b);
-}
-// Shunting-yard algorithm
-function infixToPostfix(expression) {
-  const queueDS = new Queue();
-  const stackDS = new Stack();
-  expression.forEach(function (element) {
-    //Number and open para goes directly to queue
-    if (element.type === "number") {
-      queueDS.enqueue(element);
-      //Open para goes directly to stack
-    } else if (element.type === "openPara") {
-      stackDS.push(element);
-      //Close para - enqueue all from stack until you reach open para
-    } else if (element.type === "closePara") {
-      while (stackDS.top().type !== "openPara") queueDS.enqueue(stackDS.pop());
-      stackDS.pop(); //Remove open para from stack
-      //Unary - has higher precedence then other operators, directly psh to stack
-    } else if (element.type === "unaryOpe") {
-      stackDS.push(element);
-      //Operator if stack is empty push directly to stack else compare precedence
-    } else if (element.type === "operator") {
-      //if stack is empty push directly to stack
-      if (stackDS.isEmpty()) stackDS.push(element);
-      //if stack is not empty, compare top op the stack and current operator
-      //for all operator that have higher or equal precedence on the top, move
-      //them to queue and after that push current operator to stack, including
-      //unary -
-      else {
-        //If precedence higher or equal pop and enqueue
-        while (
-          !stackDS.isEmpty() &&
-          comparePrecedence(stackDS.top(), element)
-        ) {
-          queueDS.enqueue(stackDS.pop());
-        }
-        stackDS.push(element);
-      }
-    }
-  });
-  //Enqueue leftover operators from stack
-  while (!stackDS.isEmpty()) queueDS.enqueue(stackDS.pop());
-  return queueDS;
-}
-
-function doMath(a, b, operator) {
-  if (operator === "+") return a + b;
-  if (operator === "-") return a - b;
-  if (operator === "x") return a * b;
-  if (operator === "/") return a / b;
-}
-
-function evaluatePostfix(expression) {
-  const numbers = new Stack();
-  expression.forEach(function (element) {
-    //If element is number push value converted from string to number
-    if (element.type === "number") numbers.push(+element.value);
-    //If element is operator pop last 2 numbers do operation with
-    //them end add result to stack
-    if (element.type === "operator") {
-      const num2 = numbers.pop();
-      const num1 = numbers.pop();
-      numbers.push(doMath(num1, num2, element.value));
-    }
-    //if element is unary operator multiply top with -1
-    if (element.type === "unaryOpe") numbers.push(numbers.pop() * -1);
-  });
-  return numbers;
-}
-////////////////////////////////
+//Calculator DOM selectors
 const numbers = document.querySelectorAll(".btn-number");
 const operators = document.querySelectorAll(".btn-operator");
 const display = document.querySelector(".display");
@@ -118,19 +9,19 @@ const closePara = document.querySelector(".btn-close-parentheses");
 const equal = document.querySelector(".btn-equal");
 const deleteChar = document.querySelector(".btn-del-one");
 const reset = document.querySelector(".btn-del-all");
-//Alert box
+//Alert box DOM selectors
 const alertBox = document.querySelector(".alert-box");
 const alertBtn = document.querySelector(".btn-close-alert");
 const alertMsg = document.querySelector(".alert-msg");
-
+//Alert box logic
 alertBtn.addEventListener("click", () => alertBox.classList.add("hidden"));
 
 function creatAlertMsg(msg) {
   alertMsg.textContent = msg;
   alertBox.classList.remove("hidden");
 }
-/////////////////
-
+//Math expression Object, insert input element in format {value, type} where
+//value is user input and type can be number, operator, unaryOpe, openPara and closePara
 const expression = {
   elements: [],
   countParas: 0,
@@ -162,10 +53,14 @@ const expression = {
     this.countParas = 0;
   },
 };
-
+//Global variables for current input, depending on user logic will determine and
+//split input to different types, goal is to make valid math expression and don't let user to
+//input invalid math syntax
 let value = "";
 let type = "";
-
+//Display current elements in expression object, number is spacial case. It can be
+//multi more then 1 character log. So we input it to expression only if other types
+//are pressed.
 function displayExpression() {
   display.textContent = expression.printExpression();
   if (type === "number") display.textContent += ` ${value}`;
@@ -190,6 +85,7 @@ function enterNumber(char) {
     expression.lastType() === "operator" ||
     expression.lastType() === "openPara"
   ) {
+    if (value === "-" && char === "0") value = ""; //Edge case for -0
     //Number.MAX_SAFE_INTEGER is better way but for siplicity
     if (value.length >= 15) return creatAlertMsg("To big number");
     value += char;
@@ -242,7 +138,6 @@ function enterOpenPara(char) {
   if (value === "-" && type === "number") {
     type = "unaryOpe";
     addElementAndDisplay();
-    return;
   }
   //Guard clause between number and open para must be operator
   //Number is not yet added to expression object
@@ -275,30 +170,6 @@ function enterClosePara(char) {
   }
 }
 
-function calcMathExpression() {
-  //Special case if last input is number
-  if (type === "number") addElementToExpression();
-  //Check is paras close and is last element number and last para
-  if (expression.countParas !== 0)
-    return creatAlertMsg("unbalance parentheses");
-  if (expression.lastType() === "operator")
-    return creatAlertMsg("expression ending with operator");
-  //Calculate expression
-  const temp = infixToPostfix(expression.elements);
-
-  const result = evaluatePostfix(temp.queue).top();
-  if (result === Infinity || result === -Infinity) {
-    creatAlertMsg("Zero Division Error");
-    resetCalculator();
-  }
-  expression.elements = [];
-  value = result;
-  type = "number";
-  addElementAndDisplay();
-  //Display result
-  //Prepare state for new input
-}
-
 function deleteLastChar() {
   if (type === "number" && value !== "") {
     value = value.slice(0, -1);
@@ -326,7 +197,32 @@ function resetCalculator() {
   value = "";
   type = "";
   expression.resetExpression();
-  display.textContent = "0";
+  display.textContent = `0`;
+  alertBox.classList.add("hidden");
+}
+
+function calcMathExpression() {
+  //Special case if last input is number
+  if (type === "number") addElementToExpression();
+  //Check is paras close and is last element number and last para
+  if (expression.countParas !== 0)
+    return creatAlertMsg("unbalance parentheses");
+  if (expression.lastType() === "operator")
+    return creatAlertMsg("expression ending with operator");
+  //Calculate expression
+  const temp = infixToPostfix(expression.elements);
+  const result = evaluatePostfix(temp.queue);
+  if (result === Infinity || result === -Infinity) {
+    creatAlertMsg("Zero Division Error");
+    display.textContent = result;
+    return;
+  }
+  expression.elements = [];
+  value = `${result}`; //Transform to string, numbers are only needed in postfix evaluation
+  type = "number";
+  addElementAndDisplay();
+  //Display result
+  //Prepare state for new input
 }
 
 for (let operator of operators) {
@@ -345,3 +241,18 @@ closePara.addEventListener("click", (e) =>
 equal.addEventListener("click", calcMathExpression);
 deleteChar.addEventListener("click", deleteLastChar);
 reset.addEventListener("click", resetCalculator);
+//Keyboard input
+window.addEventListener("keydown", function (e) {
+  if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(e.key)) {
+    enterNumber(e.key);
+  }
+  if (["+", "-", "*", "/"].includes(e.key)) {
+    e.key === "*" ? enterOperator("x") : enterOperator(e.key);
+  }
+  if (e.key === ".") enterFloat(e.key);
+  if (e.key === "Enter") calcMathExpression();
+  if (e.key === "Backspace") deleteChar();
+  if (e.key === "Delete") resetCalculator();
+  if (e.keyCode === 56 && e.shiftKey) enterOpenPara("(");
+  if (e.keyCode === 57 && e.shiftKey) enterClosePara(")");
+});

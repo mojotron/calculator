@@ -175,7 +175,7 @@ body {
 /* Alert box */
 .alert-box {
   height: 45px;
-  min-width: 200px;
+  min-width: 250px;
   background-color: rgb(245, 123, 9);
   position: absolute;
   top: 43%;
@@ -185,6 +185,8 @@ body {
   justify-content: center;
   align-items: center;
   padding: 0 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
 }
 .btn-close-alert {
   font-size: 1.2rem;

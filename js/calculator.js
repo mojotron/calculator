@@ -1,75 +1,8 @@
 "use strict";
-class Queue {
-  constructor() {
-    this.queue = [];
-  }
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-  enqueue(value) {
-    this.queue.push(value);
-    return this.queue.length;
-  }
-  dequeue() {
-    return this.queue.shift();
-  }
-}
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-  push(value) {
-    this.stack.push(value);
-    return this.stack.length;
-  }
-  pop() {
-    return this.stack.pop();
-  }
-  top() {
-    return this.stack[this.stack.length - 1];
-  }
-}
-//10 + 3 * 5 / (16 - 4)
-//-(3+5)-(1+2)
-//-(-(3+5)-(1+2))
-//-(-(3+5)/2-(4-(9/6+3)*3+4)*5)*6
-// let temp = [
-//   { value: "-", type: "unaryOpe" },
-//   { value: "(", type: "openPara" },
-//   { value: "-", type: "unaryOpe" },
-//   { value: "(", type: "openPara" },
-//   { value: "3", type: "number" },
-//   { value: "+", type: "operator" },
-//   { value: "5", type: "number" },
-//   { value: ")", type: "closePara" },
-//   { value: "/", type: "operator" },
-//   { value: "2", type: "number" },
-//   { value: "-", type: "operator" },
-//   { value: "(", type: "openPara" },
-//   { value: "4", type: "number" },
-//   { value: "-", type: "operator" },
-//   { value: "(", type: "openPara" },
-//   { value: "9", type: "number" },
-//   { value: "/", type: "operator" },
-//   { value: "6", type: "number" },
-//   { value: "+", type: "operator" },
-//   { value: "3", type: "number" },
-//   { value: ")", type: "closePara" },
-//   { value: "x", type: "operator" },
-//   { value: "3", type: "number" },
-//   { value: "+", type: "operator" },
-//   { value: "4", type: "number" },
-//   { value: ")", type: "closePara" },
-//   { value: "x", type: "operator" },
-//   { value: "5", type: "number" },
-//   { value: ")", type: "closePara" },
-//   { value: "x", type: "operator" },
-//   { value: "6", type: "number" },
-// ];
+//Calculate infix math expression. Translate infix to postfix using Shunting-yard
+//algorithm. Evaluate postfix expression and return result.
 
+//Helper Functions
 function operatorPrecedence(operator) {
   if (operator.value === "x" || operator.value === "/") return 2;
   if (operator.value === "+" || operator.value === "-") return 1;
@@ -77,6 +10,13 @@ function operatorPrecedence(operator) {
 
 function comparePrecedence(a, b) {
   return operatorPrecedence(a) >= operatorPrecedence(b);
+}
+
+function doMath(a, b, operator) {
+  if (operator === "+") return a + b;
+  if (operator === "-") return a - b;
+  if (operator === "x") return a * b;
+  if (operator === "/") return a / b;
 }
 // Shunting-yard algorithm
 function infixToPostfix(expression) {
@@ -120,15 +60,7 @@ function infixToPostfix(expression) {
   while (!stackDS.isEmpty()) queueDS.enqueue(stackDS.pop());
   return queueDS;
 }
-const test = infixToPostfix(temp);
-console.log(test.queue);
-function doMath(a, b, operator) {
-  if (operator === "+") return a + b;
-  if (operator === "-") return a - b;
-  if (operator === "x") return a * b;
-  if (operator === "/") return a / b;
-}
-
+//Evaluate postfix expression
 function evaluatePostfix(expression) {
   const numbers = new Stack();
   expression.forEach(function (element) {
@@ -144,6 +76,5 @@ function evaluatePostfix(expression) {
     //if element is unary operator multiply top with -1
     if (element.type === "unaryOpe") numbers.push(numbers.pop() * -1);
   });
-  return numbers;
+  return numbers.top(); //Return single number not queue ds
 }
-console.log(evaluatePostfix(test.queue));

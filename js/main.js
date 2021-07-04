@@ -14,7 +14,8 @@ const alertBox = document.querySelector(".alert-box");
 const alertBtn = document.querySelector(".btn-close-alert");
 const alertMsg = document.querySelector(".alert-msg");
 //Alert box logic
-alertBtn.addEventListener("click", () => alertBox.classList.add("hidden"));
+const removeAlert = () => alertBox.classList.add("hidden");
+alertBtn.addEventListener("click", removeAlert);
 
 function creatAlertMsg(msg) {
   alertMsg.textContent = msg;
@@ -198,7 +199,7 @@ function resetCalculator() {
   type = "";
   expression.resetExpression();
   display.textContent = `0`;
-  alertBox.classList.add("hidden");
+  removeAlert();
 }
 
 function calcMathExpression() {
@@ -255,4 +256,5 @@ window.addEventListener("keydown", function (e) {
   if (e.key === "Delete") resetCalculator();
   if (e.keyCode === 56 && e.shiftKey) enterOpenPara("(");
   if (e.keyCode === 57 && e.shiftKey) enterClosePara(")");
+  if (e.key === "Escape") removeAlert();
 });

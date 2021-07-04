@@ -1,14 +1,16 @@
 body {
   min-height: 100vh;
   width: 100%;
-  background: url("/images/pattern.png"),
+  background: url("../images/pattern.png"),
     linear-gradient(25deg, rgb(5, 108, 242), rgb(247, 236, 31));
   background-size: 50px, auto;
   font-size: 16px;
   user-select: none;
   font-family: "Bebas Neue", monospace;
+  user-select: none;
 }
 .main-wrapper {
+  height: inherit;
   min-height: inherit;
   display: flex;
   flex-direction: column;
@@ -18,7 +20,7 @@ body {
 /* HEADER */
 .header {
   color: #343434;
-  width: 400px;
+  width: 300px;
   text-align: center;
 }
 .headings {
@@ -29,7 +31,7 @@ body {
   font-size: 1.1rem;
   font-weight: 100;
   letter-spacing: 1px;
-  padding: 10px 0 25px;
+  padding: 0.5rem 0 1rem;
 }
 .calculator {
   height: 450px;
@@ -174,11 +176,12 @@ body {
 }
 /* Alert box */
 .alert-box {
+  box-sizing: border-box;
   height: 45px;
   min-width: 250px;
   background-color: rgb(245, 123, 9);
-  position: absolute;
-  top: 43%;
+  position: relative;
+  bottom: 365px;
   transform: translateY(-30%);
   display: flex;
   color: #fff;
@@ -187,6 +190,8 @@ body {
   padding: 0 0.5rem;
   font-size: 1.1rem;
   letter-spacing: 1px;
+  box-shadow: 2px 1px 10px rgb(158, 65, 65);
+  border-radius: 3px;
 }
 .btn-close-alert {
   font-size: 1.2rem;
@@ -201,4 +206,3 @@ body {
 .hidden {
   visibility: hidden;
 }
-/*TEST*/

@@ -1,7 +1,7 @@
 body {
   min-height: 100vh;
   width: 100%;
-  background: url("../images/pattern.png"),
+  background: url("/calculator/images/pattern.png"),
     linear-gradient(25deg, rgb(5, 108, 242), rgb(247, 236, 31));
   background-size: 50px, auto;
   font-size: 16px;
